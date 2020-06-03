@@ -19,8 +19,8 @@ async function main() {
   const message: string = "i love kimchi";
 
   const service = await Release.deploy(gw, {
-    description: 'My big secret',
-    message: 'I love kimchi',
+    description: description,
+    message: message,
     messageReleaseTime:
     BigInt(moment().add(2, 'minutes').unix()),
   });
