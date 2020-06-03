@@ -43,7 +43,7 @@ Once you have your service, you can call:
 
 `service.message()` - This will retrieve your message. If the message has not yet been released, the promise will reject and give you an error message. (This is true even if you wrote the message; see FAQ).
 
-`service.changeReleaseTime({newTime: unixTime})** - This will change the release
+`service.changeReleaseTime({newTime: unixTime})` - This will change the release
 time of your message. Typically, you will probably be calling this to extend the
 release time of your message (i.e., making it release later than it would
 otherwise. However, you can also change the release date to be sooner. You can
