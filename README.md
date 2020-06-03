@@ -108,9 +108,19 @@ hand, it could enable new types of operational security mistakes, including
 social engineering attacks. Besides, users can simply keep track of their secret
 off the chain for their own personal use, making them less likely to use the
 contract to manage this process (the contract should probably only be used for
-releasing secrets to others).
+releasing secrets to others**.
 
 Again, user testing can help to evaluate the risks and rewards of this possible feature.
+
+**Contract emits an event when a change occurs?**
+
+There's no need to an emit an event when a message becomes public - that time is
+just in the contract. However, it may be helpful to emit an event when the
+release time is updated. This could allow subscribers to keep tabs on a secret.
+At the same time, this updates happen semi-infrequently, so it's unclear what the usecase would be.
+
+Again, user testing can help us determine if there's user need around this feature.
+
 
 # Differences from initial design
 
