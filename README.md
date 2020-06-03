@@ -75,15 +75,12 @@ confidential.
 *I'm trying to release a PDF/.zip/video. How do I do that?*
 
 You'll want to encrypt your file symmetrically with something like VeraCrypt.
-Post the encrypted file wherever you like (IPFS). Take the symmetric key and
-publish it as a message in your release. As the description, list a link to the
-file (e.g., the IPFS hash), along with any other metadata.
+Post the encrypted file wherever you like (e.g., IPFS). Take the symmetric key
+and publish it as a message in your release. As the description, list a link to
+the file (e.g., the IPFS hash), along with any other metadata.
 
 A managed workflow is coming here soon. If you're not 100% sure what's going on
 here, don't use this tool yet.
-
-
-
 
 # Possible extensions
 
