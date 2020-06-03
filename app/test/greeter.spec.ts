@@ -61,6 +61,19 @@ describe('Basic functionality', () => {
       .toBe('Message is not yet released.')
   });
 
+  it('can update release time of not-yet-released messages', async () => {
+    let _ = await futureMsgService.changeReleaseTime({newTime: timeInPast})
+    let msg = await futureMsgService.message();
+    expect(msg).toBe(message);
+  });
+
+
+  it('can NOT update release time of already-released messages', async () => {
+    await expect(pastMsgService.changeReleaseTime({newTime: timeInFuture}))
+      .rejects
+      .toBe('Cannot update release time of already-released message.')
+  });
+
   afterAll(async () => {
     await gw.disconnect();
   });

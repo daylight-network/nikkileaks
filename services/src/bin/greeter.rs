@@ -38,20 +38,29 @@ impl Release {
 
     /// Release the message at some different time. Only the message's author can do this.
     pub fn change_release_time(&mut self, ctx: &Context, new_time: u64) -> Result<()> {
-        dbg!("My release time is {}", self.message_release_time);
         // If the caller is not the message author,
         // They get an error.
         if !(&self.author == &ctx.sender()) {
             return Err("Sender does not have permission to make message public.".to_string());
         }
+        // If the caller IS not the message author,
+        // but the message has already been released,
+        // They get an error.
+        //
+        // This prevents authors from getting a false sense of security
+        // By making confidential an already-released message.
+        else if now() > self.message_release_time {
+            return Err("Cannot update release time of already-released message.".to_string());
+        }
         self.message_release_time = new_time;
-        dbg!("My release time is now {}", self.message_release_time);
         Ok(())
     }
 
     /// Get the message. Anyone can do this *if* the time the message becomes public is in the past.
     pub fn message(&self, _ctx: &Context) -> Result<String> {
-        if !(now() > self.message_release_time) {
+        // If it's not yet release time,
+        // return an error.
+        if now() < self.message_release_time {
             return Err("Message is not yet released.".to_string());
         }
         Ok(self.message.clone())
@@ -149,6 +158,24 @@ mod tests {
         assert_eq!(release.message(&viewer_ctx).unwrap(), message);
     }
 
+    #[test]
+    fn author_cannot_change_message_release_time_if_message_already_public() {
+        let (_author_address, author_ctx) = create_account_ctx();
+
+        let description = "My big news";
+        let message = "I'm in love with kimchi.";
+        let release_time = now()-100000; // some time in the past
+
+        let mut release=
+            Release::new(&author_ctx,
+                         description.to_string(),
+                         message.to_string(),
+                         release_time);
+
+        let new_release_time = now()+100000; // some time in the future
+        // should NOT be allowed to make this change
+        release.change_release_time(&author_ctx, new_release_time).unwrap_err();
+    }
 }
 
 
