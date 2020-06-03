@@ -135,7 +135,7 @@ This design focused on *delegation*. This decision was based primarily on the
 belief that getting a trusted time from the blockchain would be impossible.
 After we established that it was possible to get a trusted time from the chain,
 we scrapped this idea. The question of how delegation plays into the Dead Man's
-Switch core functionality is still very much an open one: see
+Switch core functionality is still very much an open one: see Possible Extensions, above.
 
 # Contributing
 The smart contract is in `services/src/bin/greeter.rs`.
