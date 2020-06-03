@@ -34,14 +34,14 @@ describe('Basic functionality', () => {
     pastMsgService = await Release.deploy(gw, {
       description: description,
       message: message,
-      messageBecomesPublicTime: timeInPast,
+      messageReleaseTime: timeInPast,
     });
 
     // post a message that will be released in the future
     futureMsgService = await Release.deploy(gw, {
       description: description,
       message: message,
-      messageBecomesPublicTime: timeInFuture,
+      messageReleaseTime: timeInFuture,
     });
   });
 

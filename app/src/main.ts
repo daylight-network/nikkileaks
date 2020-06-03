@@ -21,7 +21,7 @@ async function main() {
   const service = await Release.deploy(gw, {
     description: 'My big secret',
     message: 'I love kimchi',
-    messageBecomesPublicTime:
+    messageReleaseTime:
     BigInt(moment().add(2, 'minutes').unix()),
   });
 
