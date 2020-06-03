@@ -1,25 +1,43 @@
 import { Gateway } from 'oasis-std';
+import { Address } from 'oasis-std';
 
-import { Greeter, Greeted } from '../service-clients/greeter';
+import { Release } from '../service-clients/greeter';
+
+import moment from 'moment';
+
+function makeGateway () {
+  return new Gateway(
+    'https://gateway.devnet.oasiscloud.io',
+    'AAAAGYHZxhwjJXjnGEIiyDCyZJq+Prknbneb9gYe9teCKrGa',
+  );
+}
 
 async function main() {
-    const gw: Gateway = new Gateway(
-        'https://gateway.devnet.oasiscloud.io',
-        'AAAAGYHZxhwjJXjnGEIiyDCyZJq+Prknbneb9gYe9teCKrGa',
-    );
+  const gw: Gateway = makeGateway()
 
-    const service = await Greeter.deploy(gw, {
-        greeting: 'Hello,',
-    });
-    console.log(`Deployed Greeter at ${service.address.hex}`);
+  const description: string = "my big secret";
+  const message: string = "i love kimchi";
 
-    const sub = await Greeted.subscribe(gw, service.address);
+  const service = await Release.deploy(gw, {
+    description: 'My big secret',
+    message: 'I love kimchi',
+    messageBecomesPublicTime:
+    BigInt(moment().add(2, 'minutes').unix()),
+  });
 
-    const greeting = await service.greet({ name: 'template' }); // emits a `Greeted` event
-    console.log(`Greeter says: ${greeting}`);
+  console.log(`Deployed Release at ${service.address.hex}`);
 
-    const event = await sub.first();
-    console.log(`event: ${event.from.hex} greeted ${event.to}!`);
+}
+
+// Call this method, passing in your contract's address,
+// if you'd like to test your message out.
+async function testMessage (addr: Address) {
+  const gw: Gateway = makeGateway()
+
+  let rel = await Release.connect(addr, gw);
+  let msg = await rel.message();
+
+  console.log('received!', msg);
 }
 
 main().catch(console.error);

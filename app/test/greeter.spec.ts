@@ -1,39 +1,67 @@
 import { Gateway } from 'oasis-std';
 
-import { Greeter, Greeted } from '../service-clients/greeter';
+import { Release } from '../service-clients/greeter';
+
+import moment from 'moment';
 
 jest.setTimeout(5000);
 
-describe('Greeter Test', () => {
-    let service: Greeter;
+const description: string = "my big secret";
+const message: string = "i love kimchi";
 
-    // create a gateway to the oasis node
-    const gw: Gateway = new Gateway(
-        'http://localhost:1234',
-        'AAAAGYHZxhwjJXjnGEIiyDCyZJq+Prknbneb9gYe9teCKrGa',
-    );
+function getTimestamp (date: string): BigInt {
+  return BigInt(moment(date, "M/D/YYYY H:mm").unix())
+}
 
-    beforeAll(async () => {
-        // deploy the Greeter service
-        service = await Greeter.deploy(gw, {
-            greeting: 'Hello,',
-        });
+describe('Basic functionality', () => {
+  let pastMsgService: Release;
+  let futureMsgService: Release;
+  let timeInPast: BigInt = BigInt(
+    moment().subtract(1, 'hour').unix()
+  );
+  let timeInFuture: BigInt = BigInt(
+    moment().add(1, 'hour').unix()
+  );
+
+  // create a gateway to the oasis node
+  let gw: Gateway = new Gateway(
+    'http://localhost:1234',
+    'AAAAGYHZxhwjJXjnGEIiyDCyZJq+Prknbneb9gYe9teCKrGa',
+  );
+
+  beforeAll(async () => {
+    // post a message that's already released
+    pastMsgService = await Release.deploy(gw, {
+      description: description,
+      message: message,
+      messageBecomesPublicTime: timeInPast,
     });
 
-    it('deployed', async () => {
-        expect(service).toBeTruthy();
+    // post a message that will be released in the future
+    futureMsgService = await Release.deploy(gw, {
+      description: description,
+      message: message,
+      messageBecomesPublicTime: timeInFuture,
     });
+  });
 
-    it('known greeting', async () => {
-        const sub = await Greeted.subscribe(gw, service.address);
-        const greeting = await service.greet({ name: 'friend' });
-        expect(greeting).toBe('Hello, friend');
-        const event = await sub.first();
-        expect(event.to).toBe('friend');
-      console.log(event.time)
-    });
+  it('deploys', async () => {
+    expect(pastMsgService).toBeTruthy();
+    expect(futureMsgService).toBeTruthy();
+  });
 
-    afterAll(async () => {
-        await gw.disconnect();
-    });
+  it('receive message released in the past', async () => {
+      let pastMsg = await pastMsgService.message();
+      expect(pastMsg).toBe(message);
+  });
+
+  it('does NOT receive message released in the future', async () => {
+    await expect(futureMsgService.message())
+      .rejects
+      .toBe('Message is not yet released.')
+  });
+
+  afterAll(async () => {
+    await gw.disconnect();
+  });
 });
