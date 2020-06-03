@@ -41,7 +41,7 @@ two minutes, it will become public. The `description` will always be public.
 
 Once you have your service, you can call:
 
-`service.message()` - This will retrieve your message. If the message has not yet been released, the promise will reject and give you an error message. (This is true even if you wrote the message; see FAQ).
+`service.message()` - This will retrieve your message. If the message has not yet been released, the promise will reject and give you an error message. (This is true even if you wrote the message; see Possible Extensions, below).
 
 `service.changeReleaseTime({newTime: unixTime})` - This will change the release
 time of your message. Typically, you will probably be calling this to extend the
