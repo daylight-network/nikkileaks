@@ -2,6 +2,9 @@
 
 A distributed Dead Man's Switch.
 
+
+**WARNING: This is highly experimental software. I provide no guarantees. Use at your own risk. You've been warned**
+
 # Requirements
 
 You need Oasis CLI (tested on 0.2.0, toolchain 20.18). As for now, you can
@@ -69,6 +72,19 @@ of an already-released message to be in the future may give the caller a false
 sense of security. Once a message has been released, we assume it is no longer
 confidential.
 
+*I'm trying to release a PDF/.zip/video. How do I do that?*
+
+You'll want to encrypt your file symmetrically with something like VeraCrypt.
+Post the encrypted file wherever you like (IPFS). Take the symmetric key and
+publish it as a message in your release. As the description, list a link to the
+file (e.g., the IPFS hash), along with any other metadata.
+
+A managed workflow is coming here soon. If you're not 100% sure what's going on
+here, don't use this tool yet.
+
+
+
+
 # Possible extensions
 
 **Delegate others to extend time?**
@@ -129,3 +145,6 @@ The smart contract is in `services/src/bin/greeter.rs`.
 After modifying it, run `oasis build` to regenerate the `app/service-clients/greeter.ts` client.
 
 Then, you can test the client with `yarn test`.
+# License
+
+BSD-3
