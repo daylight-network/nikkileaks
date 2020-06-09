@@ -15,28 +15,39 @@ pub fn now() -> u64 {
 
 
 #[derive(Service)]
-struct Release {
+struct Leak {
     author: Address,
-    description: String,
+    public_description: String,
     message: String,
     message_release_time: u64
 }
 
 
-impl Release {
+/// The core abstraction is a Leak.
+///
+/// Leaks have a `public_description`, which is always visible.
+///
+/// They also have a `message`, which is released at `message_release_time`.
+///
+/// The author of the original leak---and only this author---can
+/// `change_release_time(new_time)`. (Note: The author can only change the time
+/// of an unreleased message; an already-released message cannot have its time
+/// changed).
+///
+impl Leak {
     pub fn new(ctx: &Context,
-               description: String,
+               public_description: String,
                message: String,
                message_release_time: u64) -> Self {
         Self {
             author: ctx.sender(),
-            description,
+            public_description,
             message,
             message_release_time,
         }
     }
 
-    /// Release the message at some different time. Only the message's author can do this.
+    /// Leak the message at some different time. Only the message's author can do this.
     pub fn change_release_time(&mut self, ctx: &Context, new_time: u64) -> Result<()> {
         // If the caller is not the message author,
         // They get an error.
@@ -64,6 +75,11 @@ impl Release {
             return Err("Message is not yet released.".to_string());
         }
         Ok(self.message.clone())
+    }
+
+    /// Get the public description of the leak. Anyone can do this.
+    pub fn get_public_description (&self, _ctx: &Context) -> Result<String> {
+        Ok(self.public_description.clone())
     }
 
 }
@@ -98,14 +114,18 @@ mod tests {
         let release_time = now()+100000;
 
         let release=
-            Release::new(&author_ctx,
+            Leak::new(&author_ctx,
                          description.to_string(),
                          message.to_string(),
                          release_time);
 
-        // Author nor Viewer nor Releaser should be able to read message before it is released
+        // Neither Author nor Viewer should be able to read message before it is released
         assert!(release.message(&author_ctx).is_err());
         assert!(release.message(&viewer_ctx).is_err());
+
+        // Both author and viewer should be able to read the public description
+        // of the message, even if the message itself hasn't been released
+        assert_eq!(release.get_public_description(&author_ctx).unwrap(), description);
     }
 
     #[test]
@@ -118,7 +138,7 @@ mod tests {
         let release_time = now()-100000;
 
         let release=
-            Release::new(&author_ctx,
+            Leak::new(&author_ctx,
                          description.to_string(),
                          message.to_string(),
                          release_time);
@@ -138,12 +158,12 @@ mod tests {
         let release_time = now()+100000; // some time in the future
 
         let mut release=
-            Release::new(&author_ctx,
+            Leak::new(&author_ctx,
                          description.to_string(),
                          message.to_string(),
                          release_time);
 
-        // Neither Author nor Viewer nor Releaser should be able to read message before it is released
+        // Neither Author nor Viewer nor Leakr should be able to read message before it is released
         assert!(release.message(&author_ctx).is_err());
         assert!(release.message(&viewer_ctx).is_err());
 
@@ -167,7 +187,7 @@ mod tests {
         let release_time = now()-100000; // some time in the past
 
         let mut release=
-            Release::new(&author_ctx,
+            Leak::new(&author_ctx,
                          description.to_string(),
                          message.to_string(),
                          release_time);
@@ -180,6 +200,6 @@ mod tests {
 
 
 fn main() {
-    oasis_std::service!(Release);
+    oasis_std::service!(Leak);
 }
 

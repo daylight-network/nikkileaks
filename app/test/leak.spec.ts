@@ -1,6 +1,6 @@
 import { Gateway } from 'oasis-std';
 
-import { Release } from '../service-clients/greeter';
+import { Leak } from '../service-clients/leak';
 
 import moment from 'moment';
 
@@ -14,8 +14,8 @@ function getTimestamp (date: string): BigInt {
 }
 
 describe('Basic functionality', () => {
-  let pastMsgService: Release;
-  let futureMsgService: Release;
+  let pastMsgService: Leak;
+  let futureMsgService: Leak;
   let timeInPast: BigInt = BigInt(
     moment().subtract(1, 'hour').unix()
   );
@@ -31,15 +31,15 @@ describe('Basic functionality', () => {
 
   beforeAll(async () => {
     // post a message that's already released
-    pastMsgService = await Release.deploy(gw, {
-      description: description,
+    pastMsgService = await Leak.deploy(gw, {
+      publicDescription: description,
       message: message,
       messageReleaseTime: timeInPast,
     });
 
     // post a message that will be released in the future
-    futureMsgService = await Release.deploy(gw, {
-      description: description,
+    futureMsgService = await Leak.deploy(gw, {
+      publicDescription: description,
       message: message,
       messageReleaseTime: timeInFuture,
     });
@@ -55,10 +55,18 @@ describe('Basic functionality', () => {
       expect(pastMsg).toBe(message);
   });
 
+
   it('does NOT receive message released in the future', async () => {
     await expect(futureMsgService.message())
       .rejects
       .toBe('Message is not yet released.')
+  });
+
+  it('access public description on released *and* unreleased leaks', async () => {
+    let desc1 = await pastMsgService.getPublicDescription();
+    expect(desc1).toBe(description);
+    let desc2 = await futureMsgService.getPublicDescription();
+    expect(desc2).toBe(description);
   });
 
   it('can update release time of not-yet-released messages', async () => {

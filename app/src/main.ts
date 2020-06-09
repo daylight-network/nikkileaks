@@ -1,7 +1,7 @@
 import { Gateway } from 'oasis-std';
 import { Address } from 'oasis-std';
 
-import { Release } from '../service-clients/greeter';
+import { Leak } from '../service-clients/leak';
 
 import moment from 'moment';
 
@@ -18,14 +18,13 @@ async function main() {
   const description: string = "my big secret";
   const message: string = "i love kimchi";
 
-  const service = await Release.deploy(gw, {
-    description: description,
+  const service = await Leak.deploy(gw, {
+    publicDescription: description,
     message: message,
-    messageReleaseTime:
-    BigInt(moment().add(2, 'minutes').unix()),
+    messageReleaseTime: BigInt(moment().add(2, 'minutes').unix()),
   });
 
-  console.log(`Deployed Release at ${service.address.hex}`);
+  console.log(`Deployed Leak at ${service.address.hex}`);
 
 }
 
@@ -34,7 +33,7 @@ async function main() {
 async function testMessage (addr: Address) {
   const gw: Gateway = makeGateway()
 
-  let rel = await Release.connect(addr, gw);
+  let rel = await Leak.connect(addr, gw);
   let msg = await rel.message();
 
   console.log('received!', msg);

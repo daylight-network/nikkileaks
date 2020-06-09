@@ -51,7 +51,7 @@
     },
     "oasis": {
         "serviceDependencies": {
-            "greeter": "file:./target/service/greeter.wasm"
+            "leak": "file:./target/service/leak.wasm"
         },
         "clientsDir": "app/service-clients"
     }

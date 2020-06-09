@@ -9,12 +9,12 @@ A distributed Dead Man's Switch.
 
 You need Oasis CLI (tested on 0.2.0, toolchain 20.18). As for now, you can
 install this with `curl --proto '=https' --tlsv1.2 -sSL https://get.oasis.dev |
-python`.
+python - --toolchain 20.18`
 
 # Setup
 
-- Run `oasis-chain` on your machine.
-- In this directory, do `oasis test`. (Note: You may need to `yarn add -D -W @types/node`).
+- Run `oasis chain` on your machine.
+- In this directory, do `yarn test` to run tests. (Note: You may need to `yarn add -D -W @types/node`).
 
 # What is this?
 
@@ -58,7 +58,7 @@ provide confidential state over trustless, distributed system.
 
 Future release dates are set by specifying a [UNIX
 time](https://en.wikipedia.org/wiki/Unix_time). The Oasis smart contract returns
-a trusted "block time." This time is possible to manipulate, but its tampering
+a trusted "block time." This time iscurl --proto '=https' --tlsv1.2 -sSL https://get.oasis.dev | python - --toolchain 20.18 possible to manipulate, but its tampering
 becomes increasingly unlikely as the number of honest validators increases.
 (After all, if 3/5 of the validators on the network spoof time to release your
 secret, the security assumptions that undergird Oasis are already violated).

@@ -648,6 +648,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "nikkileaks"
+version = "0.1.0"
+dependencies = [
+ "oasis-std 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "oasis-test 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "num_cpus"
 version = "1.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1255,14 +1263,6 @@ dependencies = [
  "redox_syscall 0.1.56 (registry+https://github.com/rust-lang/crates.io-index)",
  "remove_dir_all 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "winapi 0.3.8 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "template"
-version = "0.1.0"
-dependencies = [
- "oasis-std 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "oasis-test 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
