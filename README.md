@@ -121,32 +121,6 @@ At the same time, this updates happen semi-infrequently, so it's unclear what th
 
 Again, user testing can help us determine if there's user need around this feature.
 
-
-# Differences from initial design
-
-This design is somewhat different from the design we proposed initially.
-
-In the initial specs, the contract exposed the following methods:
-
-```
-post(message, trusted_voters, required_votes)
-
-release(messageId)
-
-read(messageId) -> message
-```
-
-`post` pllows the user to post a message, which will be kept as confidential
-state until enough `trusted_voters` (represented by a list of addresses) call
-`release()` on that message. When the number of votes was greater than
-`required_votes`, the message would become public.
-
-This design focused on *delegation*. This decision was based primarily on the
-belief that getting a trusted time from the blockchain would be impossible.
-After we established that it was possible to get a trusted time from the chain,
-we scrapped this idea. The question of how delegation plays into the Dead Man's
-Switch core functionality is still very much an open one: see Possible Extensions, above.
-
 # Contributing
 The smart contract is in `services/src/bin/greeter.rs`.
 After modifying it, run `oasis build` to regenerate the `app/service-clients/greeter.ts` client.
